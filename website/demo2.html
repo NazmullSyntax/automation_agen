@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nazmul Personal Blog — Article</title>
+  <style>
+    /* ============ THEME TOKENS ============ */
+    :root {
+      --bg: #0b0b0b;
+      --bg-elev: #111;
+      --bg-elev-2: #1a1a1a;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f0f0f0;
+      --text-dim: #aaa;
+      --text-dimmer: #777;
+      --text-invert: #0b0b0b;
+      --accent: #fff;
+    }
+
+    body.light {
+      --bg: #f6f6f4;
+      --bg-elev: #ffffff;
+      --bg-elev-2: #eeece7;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.18);
+      --text: #0b0b0b;
+      --text-dim: #4a4a4a;
+      --text-dimmer: #7a7a7a;
+      --text-invert: #f6f6f4;
+      --accent: #0b0b0b;
+    }
+
+    /* ============ RESET ============ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, 'Inter', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.35s ease, color 0.35s ease;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; transition: opacity 0.2s ease; }
+    a:hover { opacity: 0.7; }
+    ul { list-style: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ============ HEADER ============ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-weight: 600;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+    .logo span { color: var(--text-dim); font-weight: 300; }
+
+    .back-link {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back-link::before { content: "←"; font-size: 1rem; }
+
+    .header-actions { display: flex; align-items: center; gap: 20px; }
+
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .theme-toggle:hover { background: var(--bg-elev-2); transform: rotate(20deg); }
+
+    /* ============ HERO ============ */
+    .post-hero {
+      padding: 80px 0 40px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .post-meta-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-dimmer);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .post-meta-top .dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--text-dimmer);
+    }
+
+    .post-title {
+      font-size: clamp(2.2rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      max-width: 16ch;
+      margin-bottom: 28px;
+    }
+
+    .post-title em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-dim);
+    }
+
+    .post-excerpt {
+      font-size: 1.15rem;
+      color: var(--text-dim);
+      max-width: 60ch;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .post-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      flex-wrap: wrap;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #333, #555);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    body.light .avatar { background: linear-gradient(135deg, #ccc, #999); color: #111; }
+
+    /* ============ FEATURE IMAGE ============ */
+    .feature-image {
+      margin: 60px 0 0;
+      aspect-ratio: 21/9;
+      border-radius: 28px;
+      background: linear-gradient(145deg, var(--bg-elev-2), var(--bg-elev));
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .feature-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04), transparent 40%);
+      pointer-events: none;
+    }
+
+    /* ============ ARTICLE BODY ============ */
+    .article-layout {
+      display: grid;
+      grid-template-columns: 1fr min(720px, 100%) 1fr;
+      gap: 40px;
+      padding: 70px 0 40px;
+    }
+
+    .article-body {
+      grid-column: 2;
+      font-size: 1.08rem;
+      color: var(--text);
+    }
+
+    .article-body p { margin-bottom: 1.6em; color: var(--text-dim); }
+
+    .article-body p.lead {
+      font-size: 1.28rem;
+      color: var(--text);
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .article-body h2 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      margin: 2.2em 0 0.8em;
+      color: var(--text);
+    }
+
+    .article-body h3 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 1.8em 0 0.6em;
+      color: var(--text);
+    }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--text);
+      padding: 8px 0 8px 28px;
+      margin: 2em 0;
+      font-size: 1.3rem;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .article-body ul.bullets {
+      margin: 1em 0 1.6em 1.2em;
+      list-style: disc;
+      color: var(--text-dim);
+    }
+
+    .article-body ul.bullets li { margin-bottom: 0.5em; }
+
+    .article-body code {
+      background: var(--bg-elev-2);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      font-family: 'SF Mono', Menlo, monospace;
+      border: 1px solid var(--border);
+    }
+
+    .article-body hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3em 0;
+    }
+
+    /* ============ TAGS ============ */
+    .post-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 60px 0 0;
+    }
+
+    .post-tags a {
+      background: var(--bg-elev-2);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      transition: all 0.2s;
+    }
+    .post-tags a:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+      opacity: 1;
+    }
+
+    /* ============ AUTHOR BOX ============ */
+    .author-box {
+      margin-top: 60px;
+      padding: 32px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .author-box .avatar {
+      width: 60px; height: 60px; font-size: 1.1rem; flex-shrink: 0;
+    }
+
+    .author-box h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .author-box p {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+
+    /* ============ RELATED POSTS ============ */
+    .related {
+      margin-top: 100px;
+      padding-top: 60px;
+      border-top: 1px solid var(--border);
+    }
+
+    .related-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 32px;
+    }
+
+    .related-header h2 {
+      font-size: 1.4rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    .related-header a {
+      font-size: 0.8rem;
+      color: var(--text-dimmer);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border-strong);
+    }
+
+    .card-thumb {
+      aspect-ratio: 16/10;
+      background: linear-gradient(145deg, var(--bg-elev-2), var(--bg-elev));
+      display: grid;
+      place-items: center;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-category {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-dimmer);
+    }
+
+    .card-title {
+      font-weight: 500;
+      font-size: 1.1rem;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .card-meta {
+      font-size: 0.78rem;
+      color: var(--text-dimmer);
+      margin-top: 4px;
+    }
+
+    /* ============ FOOTER ============ */
+    .site-footer {
+      margin-top: 100px;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-dimmer);
+    }
+
+    /* ============ SCROLL REVEAL ============ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ============ PROGRESS BAR ============ */
+    .progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--text);
+      width: 0%;
+      z-index: 200;
+      transition: width 0.1s linear;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 900px) {
+      .related-grid { grid-template-columns: 1fr 1fr; }
+      .article-layout { grid-template-columns: 1fr; }
+      .article-body { grid-column: 1; }
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 0 20px; }
+      .related-grid { grid-template-columns: 1fr; }
+      .post-hero { padding: 50px 0 30px; }
+      .author-box { flex-direction: column; }
+      .header-inner { padding: 16px 0; }
+      .back-link span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll progress bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="logo">NAZMUL <span>Personal Blog</span></a>
+      <a href="#" class="back-link"><span>Back to all posts</span></a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="post-hero">
+    <div class="container">
+      <div class="post-meta-top reveal">
+        <span>Design</span>
+        <span class="dot"></span>
+        <span>September 12, 2026</span>
+        <span class="dot"></span>
+        <span>8 min read</span>
+      </div>
+
+      <h1 class="post-title reveal reveal-delay-1">
+        Crafting <em>digital warmth</em> in a cold interface world
+      </h1>
+
+      <p class="post-excerpt reveal reveal-delay-2">
+        A deep dive into the small design decisions — typography, motion, tone, and rhythm —
+        that turn a technically correct interface into one that actually feels alive.
+      </p>
+
+      <div class="post-info reveal reveal-delay-3">
+        <div class="avatar">NZ</div>
+        <div>
+          <strong style="color: var(--text); font-weight: 500;">Nazmul</strong>
+          <div style="font-size: 0.8rem;">Designer &amp; Writer · PRO</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE IMAGE -->
+  <div class="container">
+    <div class="feature-image reveal">
+      [ ARTICLE COVER · NAZMUL BLOG ]
+    </div>
+  </div>
+
+  <!-- ARTICLE -->
+  <div class="container article-layout">
+    <article class="article-body">
+
+      <p class="lead reveal">
+        There's a quiet revolution happening in web design. After a decade of hyper-minimalism
+        and brutal efficiency, the most interesting interfaces are once again learning how to feel
+        like <strong>places</strong> — not tools.
+      </p>
+
+      <p class="reveal">
+        When I redesigned my personal blog this year, I had one question guiding every decision:
+        <em>does this feel warm?</em> Not "does it look clean," not "is it fast" — those are table
+        stakes. Warmth is what separates a site you skim from one you remember.
+      </p>
+
+      <h2 class="reveal">The problem with "correct" design</h2>
+
+      <p class="reveal">
+        Modern design systems have made us extraordinarily good at producing interfaces that are
+        <code>accessible</code>, <code>responsive</code>, and <code>consistent</code>. But nothing
+        in that list of virtues includes <em>delightful</em>. And delight is not a decoration — it's
+        the thing that makes someone come back.
+      </p>
+
+      <blockquote class="reveal">
+        "The best interfaces don't feel designed. They feel discovered."
+      </blockquote>
+
+      <p class="reveal">
+        I found that three ingredients did most of the heavy lifting for me. None of them are
+        expensive to implement, and none of them require a redesign. They require restraint.
+      </p>
+
+      <h3 class="reveal">1. Asymmetry with intent</h3>
+
+      <p class="reveal">
+        Symmetry is the default. Everything in our grid systems pushes us toward balance. But
+        a slightly off-center hero, a title that wraps a little earlier than it "should" — these
+        small imperfections signal a human made this.
+      </p>
+
+      <h3 class="reveal">2. Motion that respects attention</h3>
+
+      <p class="reveal">
+        Animation should feel like the interface breathing, not like it's performing for you.
+        A gentle fade on scroll. A hover that lifts 4 pixels instead of 40. The rule I use:
+      </p>
+
+      <ul class="bullets reveal">
+        <li>Duration under 500ms — anything longer feels sluggish</li>
+        <li>Easing curves that decelerate (never linear)</li>
+        <li>Never animate something the user is actively reading</li>
+        <li>Reduce motion when the OS asks you to</li>
+      </ul>
+
+      <h3 class="reveal">3. Typography as tone of voice</h3>
+
+      <p class="reveal">
+        The single biggest lever on whether a site feels warm or cold is not color — it's
+        <strong>type</strong>. Tight letter-spacing on large headlines feels confident and
+        editorial. Generous line-height in body copy feels unhurried. Italic accents in just
+        the right places feel like the writer is smiling.
+      </p>
+
+      <hr class="reveal" />
+
+      <p class="reveal">
+        None of this is new advice. But in an era where every startup has the same gradient,
+        the same dashboard, the same 8px radius — doing the small human things has become a
+        differentiator again. Warmth is a competitive advantage.
+      </p>
+
+      <p class="reveal">
+        If you're building something and it feels technically right but somehow flat — go back
+        to the details. Add one intentional asymmetry. Soften one animation curve. Choose one
+        typeface that has a personality. That's usually all it takes.
+      </p>
+
+      <!-- TAGS -->
+      <div class="post-tags reveal">
+        <a href="#">#design</a>
+        <a href="#">#typography</a>
+        <a href="#">#motion</a>
+        <a href="#">#interfaces</a>
+        <a href="#">#craft</a>
+      </div>
+
+      <!-- AUTHOR BOX -->
+      <div class="author-box reveal">
+        <div class="avatar">NZ</div>
+        <div>
+          <h4>Written by Nazmul</h4>
+          <p>
+            Designer, developer, and occasional over-thinker. I write about the craft of
+            building digital experiences that actually feel good to use. Follow along on the blog
+            or reach out — I always reply.
+          </p>
+        </div>
+      </div>
+
+    </article>
+  </div>
+
+  <!-- RELATED POSTS -->
+  <section class="container related">
+    <div class="related-header reveal">
+      <h2>Keep reading</h2>
+      <a href="#">View all posts</a>
+    </div>
+
+    <div class="related-grid">
+      <article class="card reveal">
+        <div class="card-thumb">[ ARTICLE ]</div>
+        <div class="card-content">
+          <span class="card-category">Process</span>
+          <h3 class="card-title">Why I redesigned my blog three times</h3>
+          <div class="card-meta">Sep 8, 2026 · 6 min</div>
+        </div>
+      </article>
+
+      <article class="card reveal reveal-delay-1">
+        <div class="card-thumb">[ ARTICLE ]</div>
+        <div class="card-content">
+          <span class="card-category">Typography</span>
+          <h3 class="card-title">Choosing a typeface that has a voice</h3>
+          <div class="card-meta">Sep 2, 2026 · 9 min</div>
+        </div>
+      </article>
+
+      <article class="card reveal reveal-delay-2">
+        <div class="card-thumb">[ ARTICLE ]</div>
+        <div class="card-content">
+          <span class="card-category">Motion</span>
+          <h3 class="card-title">Scroll animations that don't annoy people</h3>
+          <div class="card-meta">Aug 26, 2026 · 5 min</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer container">
+    <p>© 2026 Nazmul Personal Blog · Crafted with care</p>
+  </footer>
+
+  <script>
+    /* ============ THEME TOGGLE ============ */
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('nazmul-theme');
+    if (savedTheme === 'light') {
+      body.classList.add('light');
+      themeToggle.textContent = '☾';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('light');
+      const isLight = body.classList.contains('light');
+      themeToggle.textContent = isLight ? '☾' : '☀';
+      localStorage.setItem('nazmul-theme', isLight ? 'light' : 'dark');
+    });
+
+    /* ============ SCROLL REVEAL (IntersectionObserver) ============ */
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+    );
+
+    revealEls.forEach((el) => revealObserver.observe(el));
+
+    /* ============ SCROLL PROGRESS BAR ============ */
+    const progressBar = document.getElementById('progressBar');
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = pct + '%';
+    });
+
+    /* ============ SUBTLE HERO PARALLAX ============ */
+    const hero = document.querySelector('.post-hero');
+    if (hero) {
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        if (y < 600) {
+          hero.style.transform = `translateY(${y * 0.15}px)`;
+          hero.style.opacity = 1 - y / 700;
+        }
+      });
+    }
+
+    /* ============ RESPECT REDUCED MOTION ============ */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.reveal').forEach(el => {
+        el.classList.add('in-view');
+        el.style.transition = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
